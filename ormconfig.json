@@ -1,0 +1,9 @@
+{
+  "type": "sqlite",
+  "database": "data/todo.sqlite",
+  "entities": [
+    "api/models.ts"
+  ],
+  "synchronize": true,
+  "logging": "all"
+}

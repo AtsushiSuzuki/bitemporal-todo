@@ -1,0 +1,23 @@
+{
+  "name": "bitemporal-todo",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "nuxt"
+  },
+  "author": "Atsushi Suzuki",
+  "license": "ISC",
+  "dependencies": {
+    "bson": "^4.0.2",
+    "express": "^4.16.4",
+    "nuxt": "^2.6.3",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "https://github.com/mapbox/node-sqlite3/tarball/master",
+    "typeorm": "^0.2.16"
+  },
+  "devDependencies": {
+    "@nuxt/typescript": "^2.6.3",
+    "@types/bson": "^4.0.0",
+    "@types/express": "^4.16.1",
+    "ts-node": "^8.1.0"
+  }
+}
