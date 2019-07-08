@@ -1,0 +1,75 @@
+<h1>Bi-temporal Todo</h1>
+
+<div id="app">
+  <h2>Tasks</h2>
+
+  <table>
+    <thead>
+      <th>Title</th>
+      <th>Completed</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <tr v-for="task in tasks" :key="task.id">
+        <td><input type="text" v-model="task.title" v-on:change="updateTaskTitle(task)"></td>
+        <td><input type="datetime-local" v-model="task.completed" v-on:change="updateTaskCompleted(task)"></td>
+        <td>
+          <a :href="`tasks/${task.id}/edit`" class="button">Edit</a>
+          <button type="button" v-on:click="deleteTask(task)">Delete</button>
+          <a :href="`tasks/${task.id}/history`" class="button">History</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>Create Task</h2>
+  <form v-on:submit.prevent="createTask">
+    <label for="title">Title</label>
+    <input name="title" type="text" v-model="title" required>
+    <button type="submit">Create</button>
+  </form>
+</div>
+
+<script>
+  const app = new Vue({
+    el: "#app",
+    data: {
+      tasks: null,
+      title: "",
+    },
+    async mounted() {
+      this.findTasks();
+    },
+    methods: {
+      async findTasks() {
+        this.tasks = (await axios.get("api/tasks")).data;
+      },
+      async createTask() {
+        await axios.post("api/tasks", {
+          title: this.title,
+          compleetd: null,
+        });
+        this.title = "";
+        this.findTasks();
+      },
+      async updateTaskTitle(task) {
+        await axios.put(`api/tasks/${task.id}/title`, {
+          title: task.title,
+        });
+        this.findTasks();
+      },
+      async updateTaskCompleted(task) {
+        await axios.put(`api/tasks/${task.id}/completed`, {
+          completed: task.completed,
+        });
+        this.findTasks();
+      },
+      async deleteTask(task) {
+        await axios.delete(`api/tasks/${task.id}`);
+        this.findTasks();
+      }
+    },
+  })
+</script>

@@ -1,0 +1,41 @@
+<h1>Bi-temporal Todo</h1>
+
+<div id="app" data-id="@(ViewData["Id"])">
+  <h2>Task History</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Completed</th>
+        <th>From</th>
+        <th>To</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="task in taskHistory" :key="task.historyId">
+        <td>{{ task.title }}</td>
+        <td>{{ task.completed }}</td>
+        <td>{{ task.validFrom }}</td>
+        <td>{{ task.validTo }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const id = document.getElementById("app").dataset.id;
+  const app = new Vue({
+    el: "#app",
+    data: {
+      taskHistory: null,
+    },
+    async mounted() {
+      this.findTaskHistory(id);
+    },
+    methods: {
+      async findTaskHistory(id) {
+        this.taskHistory = (await axios.get(`/api/tasks/${id}/history`)).data;
+      },
+    },
+  });
+</script>
