@@ -1,0 +1,45 @@
+<h1>Bi-temporal Todo</h1>
+
+<div id="app" data-id="@(ViewData["Id"])">
+  <h2>Todo #@(ViewData["Id"]) History</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Completed</th>
+        <th>From</th>
+        <th>To</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="todo in todoHistory" :key="todo.id">
+        <td>{{ todo.rowid }}</td>
+        <td>{{ todo.title }}</td>
+        <td><input type="checkbox" v-model="todo.completed" disabled></td>
+        <td>{{ todo.from }}</td>
+        <td>{{ todo.to }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
+<script>
+  const id = parseInt(document.getElementById("app").dataset.id);
+  const app = new Vue({
+    el: "#app",
+    data: {
+      todoHistory: null,
+    },
+    async mounted() {
+      this.findTodoHistory(id);
+    },
+    methods: {
+      async findTodoHistory(id) {
+        this.todoHistory = (await axios.get(`/api/todos/${id}/history`)).data;
+      },
+    },
+  });
+</script>
