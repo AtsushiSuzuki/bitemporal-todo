@@ -1,0 +1,79 @@
+<h1>Bi-temporal Todo</h1>
+
+<div id="app">
+  <h2>Todos</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Completed</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="todo in todos" :key="todo.id">
+        <td>{{ todo.id }}</td>
+        <td><input type="text" v-model="todo.title" v-on:change="updateTodo(todo)"></td>
+        <td><input type="checkbox" v-model="todo.completed" v-on:change="updateTodo(todo)"></td>
+        <td>
+          <button type="button" v-on:click="deleteTodo(todo)">Dismiss</button>
+          <a :href="`todos/${todo.id}/history`" class="button" target="_blank">History</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>Create Todo</h2>
+  <form v-on:submit.prevent="createTodo">
+    <label for="title">Title</label>
+    <input name="title" type="text" v-model="title" required>
+
+    <button type="submit">Create Todo</button>
+  </form>
+
+  <hr>
+
+  <a href="all" class="button">Show all items</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
+<script>
+  var app = new Vue({
+    el: "#app",
+    data: {
+      todos: null,
+      title: "",
+    },
+    async mounted() {
+      this.findAllTodos();
+    },
+    methods: {
+      async findAllTodos() {
+        this.todos = (await axios.get("api/tasks")).data;
+      },
+      async createTodo() {
+        await axios.post("api/tasks", {
+          title: this.title,
+          completed: false,
+        });
+        this.title = "";
+        this.findAllTodos();
+      },
+      async updateTodo(todo) {
+        await axios.put(`api/tasks/${todo.id}`, {
+          title: todo.title,
+          completed: todo.completed,
+        });
+        this.findAllTodos();
+      },
+      async deleteTodo(todo) {
+        await axios.delete(`api/tasks/${todo.id}`);
+        this.findAllTodos();
+      },
+    },
+  });
+</script>
